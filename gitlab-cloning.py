@@ -15,11 +15,12 @@ group = gl.groups.get(group_id)
 projects = group.projects.list(as_list=False)
 for project in projects:
     print(project.name)
-    if cloning_mode == 'ssh':
-        # SSH version
-        git.Git(repositories_root_dir).clone(project.ssh_url_to_repo)
-    elif cloning_mode == 'http':
-        # HTTPS version
-        git.Git(repositories_root_dir).clone(f'https://{gitlab_username}:{gitlab_password}@{project.http_url_to_repo.split("https://")[1]}')
-    else:
-        raise Exception('Error: no valid cloning mode provided')
+    if not os.path.exists(os.path.join(repositories_root_dir, project.name.lower())):
+        if cloning_mode == 'ssh':
+            # SSH version
+            git.Git(repositories_root_dir).clone(project.ssh_url_to_repo)
+        elif cloning_mode == 'http':
+            # HTTPS version
+            git.Git(repositories_root_dir).clone(f'https://{gitlab_username}:{gitlab_password}@{project.http_url_to_repo.split("https://")[1]}')
+        else:
+            raise Exception('Error: no valid cloning mode provided')
